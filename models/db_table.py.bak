@@ -1,0 +1,47 @@
+# -*- coding: utf-8 -*-
+import datetime
+
+db.define_table('rooms',
+	Field('code', 'string', required=True, notnull=True),
+	primarykey=['code'])
+
+db.define_table('students', 
+    Field('id', 'integer', primarykey=True, required=True, notnull=True),
+    Field('first_name', 'string', required=True, notnull=True),
+    Field('last_name', 'string', required=True, notnull=True),
+    Field('email', 'string', requires=[IS_EMAIL()], required=True, notnull=True),
+    Field('password', 'string', required=True, notnull=True),
+    Field('registration_key', 'string', required=True, notnull=True),
+    Field('reset_password_key', 'string', required=True, notnull=True),
+    Field('registraion_id', 'string', required=True, notnull=True)
+    )
+
+db.students.id.default = db.students.id.compute = lambda: db.students.id.max() + 1 if db(db.students.id>0).count() else 1
+
+db.define_table('courses_schedules', 
+    Field('id', 'integer', primarykey=True, writable=False, default=0),
+    Field('days', 'string', required=True, notnull=True),
+    Field('startTime', 'time', required=True, notnull=True, default=datetime.time(0,0)),
+    Field('endTime', 'time', required=True, notnull=True, default=datetime.time(0,0)),
+    Field('room_code', 'reference rooms', requires=IS_IN_DB(db, 'rooms.code'), notnull=True, required=True)
+          )
+
+db.courses_schedules.id.default = db.courses_schedules.id.compute = lambda: db.courses_schedules.id.max() + 1 if db(db.courses_schedules.id>0).count() else 1
+
+db.define_table('courses',
+	Field('code', 'string', required=True, notnull=True),
+	Field('name', 'string'),
+	Field('description', 'string'),
+	Field('instructor', 'string'),
+	Field('capacity', 'integer'),
+	Field('schedule_id', 'integer' 'reference course_schedules',
+		requires=IS_IN_DB(db, 'course_schedules.id', '%(days)s: %(startTime)s - %(endTime)s')),
+	primarykey=['code']
+	)
+
+db.executesql('''
+CREATE TABLE IF NOT EXISTS students_reg (
+        id INTEGER PRIMARY KEY,
+        student_id INTEGER NOT NULL REFERENCES students(id),
+        course_code VARCHAR NOT NULL REFERENCES courses(code)
+    );''')

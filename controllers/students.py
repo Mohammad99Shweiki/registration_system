@@ -90,3 +90,21 @@ def update_student():
     edit_student(student, first_name, last_name, email, password, registration_key)
     
     return response.json({"success": True})
+
+
+def delete_student():
+    student_id = request.vars.id
+    if not student_id:
+        return response.json({"error": "Missing student ID."}, status=400)
+    
+    student = db.students(student_id)
+    if not student:
+        return response.json({"error": "Student not found."}, status=404)
+    
+    delete_student_by_id(student_id)
+    
+    return response.json({"success": True})
+
+def delete_all_students():
+    delete_all()
+    return response.json({"success": True})

@@ -38,3 +38,8 @@ def edit_student(student, first_name, last_name, email, password, registration_k
     if registration_key:
         student.update_record(registration_key=registration_key)
 
+def delete_student_by_id(student_id):
+    db(db.students.id == student_id).delete()
+
+def delete_all():
+    db(db.students).delete()

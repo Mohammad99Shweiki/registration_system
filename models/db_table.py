@@ -56,3 +56,47 @@
 #         prerequest_course_code VARCHAR NOT NULL REFERENCES courses(code)
 #         );
 # """)
+
+db.define_table('rooms',
+    Field('code', 'string', length=255, notnull=True, unique=True, primarykey=True)
+)
+
+db.define_table('students',
+    Field('id', 'integer', readable=False, primarykey = True),
+    Field('first_name', 'string', length=255, notnull=True),
+    Field('last_name', 'string', length=255, notnull=True),
+    Field('email', 'string', length=255, notnull=True),
+    Field('password', 'string', length=255, notnull=True),
+    Field('registration_key', 'string', length=255, notnull=True),
+    Field('reset_password_key', 'string', length=255, notnull=True),
+    Field('registraion_id', 'string', length=255, notnull=True)
+)
+
+db.define_table('courses_schedules',
+    Field('id', 'id', readable=False, primarykey = True),
+    Field('days', 'string', notnull=True),
+    Field('startTime', 'time', notnull=True, default='00:00:00'),
+    Field('endTime', 'time', notnull=True, default='00:00:00'),
+    Field('room_code', 'reference rooms', notnull=True)
+)
+
+db.define_table('courses',
+    Field('code', 'string', length=255, notnull=True, unique=True, primarykey=True),
+    Field('name', 'string', length=255),
+    Field('description', 'text'),
+    Field('instructor', 'string', length=255),
+    Field('capacity', 'integer'),
+    Field('schedule_id', 'reference courses_schedules', notnull=True)
+)
+
+db.define_table('students_reg',
+    Field('id', 'id', readable=False, primarykey = True),
+    Field('student_id', 'reference students', notnull=True),
+    Field('course_code', 'reference courses', notnull=True)
+)
+
+db.define_table('prerequists',
+    Field('id', 'id', readable=False, primarykey = True),
+    Field('course_code', 'reference courses', notnull=True),
+    Field('prerequest_course_code', 'reference courses', notnull=True)
+)

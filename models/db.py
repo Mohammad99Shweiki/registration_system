@@ -4,7 +4,7 @@
 # AppConfig configuration made easy. Look inside private/appconfig.ini
 # Auth is for authenticaiton and access control
 # -------------------------------------------------------------------------
-import AppConfig
+from gluon.contrib.appconfig import AppConfig
 from gluon.tools import Auth
 
 

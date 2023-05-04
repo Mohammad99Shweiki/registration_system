@@ -100,3 +100,6 @@ db.define_table('prerequists',
     Field('course_code', 'reference courses', notnull=True),
     Field('prerequest_course_code', 'reference courses', notnull=True)
 )
+
+
+sdfgsdfgsfdgsg

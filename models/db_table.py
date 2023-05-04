@@ -20,19 +20,19 @@
 #     );
 # """)
 
-db.executesql("""
-    CREATE TABLE public.courses (
-        code VARCHAR PRIMARY KEY NOT NULL,
-        name VARCHAR,
-        description VARCHAR,
-        instructor VARCHAR,
-        capacity INTEGER,
-        days VARCHAR NOT NULL,
-        startTime TIME NOT NULL DEFAULT '00:00:00',
-        endTime TIME NOT NULL DEFAULT '00:00:00',
-        room_code VARCHAR NOT NULL REFERENCES rooms(code)
-    );
-""")
+# db.executesql("""
+#     CREATE TABLE public.courses (
+#         code VARCHAR PRIMARY KEY NOT NULL,
+#         name VARCHAR,
+#         description VARCHAR,
+#         instructor VARCHAR,
+#         capacity INTEGER,
+#         days VARCHAR NOT NULL,
+#         startTime TIME NOT NULL DEFAULT '00:00:00',
+#         endTime TIME NOT NULL DEFAULT '00:00:00',
+#         room_code VARCHAR NOT NULL REFERENCES rooms(code)
+#     );
+# """)
 
 # db.executesql("""
 #         CREATE TABLE IF NOT EXISTS public.students_reg (

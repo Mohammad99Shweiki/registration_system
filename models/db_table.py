@@ -20,26 +20,19 @@
 #     );
 # """)
 
-# db.executesql("""
-#     CREATE TABLE public.courses_schedules (
-#         id SERIAL PRIMARY KEY,
-#         days VARCHAR NOT NULL,
-#         startTime TIME NOT NULL DEFAULT '00:00:00',
-#         endTime TIME NOT NULL DEFAULT '00:00:00',
-#         room_code VARCHAR NOT NULL REFERENCES rooms(code)
-#     );
-# """)
-
-# db.executesql("""
-#     CREATE TABLE public.courses (
-#         code VARCHAR PRIMARY KEY NOT NULL,
-#         name VARCHAR,
-#         description VARCHAR,
-#         instructor VARCHAR,
-#         capacity INTEGER,
-#         schedule_id INTEGER NOT NULL REFERENCES courses_schedules(id)
-#     );
-# """)
+db.executesql("""
+    CREATE TABLE public.courses (
+        code VARCHAR PRIMARY KEY NOT NULL,
+        name VARCHAR,
+        description VARCHAR,
+        instructor VARCHAR,
+        capacity INTEGER,
+        days VARCHAR NOT NULL,
+        startTime TIME NOT NULL DEFAULT '00:00:00',
+        endTime TIME NOT NULL DEFAULT '00:00:00',
+        room_code VARCHAR NOT NULL REFERENCES rooms(code)
+    );
+""")
 
 # db.executesql("""
 #         CREATE TABLE IF NOT EXISTS public.students_reg (
@@ -72,21 +65,16 @@ db.define_table('students',
     Field('registraion_id', 'string', length=255, notnull=True)
 )
 
-db.define_table('courses_schedules',
-    Field('id', 'id', readable=False, primarykey = True),
-    Field('days', 'string', notnull=True),
-    Field('startTime', 'time', notnull=True, default='00:00:00'),
-    Field('endTime', 'time', notnull=True, default='00:00:00'),
-    Field('room_code', 'reference rooms', notnull=True)
-)
-
 db.define_table('courses',
-    Field('code', 'string', length=255, notnull=True, unique=True, primarykey=True),
+    Field('code', 'string', length=255, unique=True, notnull=True, primarykey=True),
     Field('name', 'string', length=255),
-    Field('description', 'text'),
+    Field('description', 'string', length=255),
     Field('instructor', 'string', length=255),
     Field('capacity', 'integer'),
-    Field('schedule_id', 'reference courses_schedules', notnull=True)
+    Field('days', 'string', length=255, notnull=True),
+    Field('startTime', 'time', notnull=True, default='00:00:00'),
+    Field('endTime', 'time', notnull=True, default='00:00:00'),
+    Field('room_code', 'string', length=255, notnull=True, requires=IS_IN_DB(db, 'rooms.code'))
 )
 
 db.define_table('students_reg',

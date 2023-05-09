@@ -1,5 +1,4 @@
 
-
 def get_students():
     students =  db(db.students).select()
     return dict(students = students)

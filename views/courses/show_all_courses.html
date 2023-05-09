@@ -1,0 +1,89 @@
+{{extend 'layout.html'}}
+<style>
+  .search-container {
+    display: flex;
+    align-items:center;
+    justify-content:flex-start;
+  }
+  
+  .search-container input[type="text"] {
+    padding: 10px;
+    border: none;
+    font-size: 17px;
+    width: 50%;
+  }
+  
+  .search-container button {
+    padding: 10px;
+    background: #ddd;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .search-container button:hover {
+    background: #ccc;
+  }  
+</style>
+<div class="container left"> 
+    <h1>All courses</h1>
+    <div class="search-container">
+      <form action="#">
+        <input type="text" placeholder="Search..." name="search" id = searchInput>
+        <button type="submit"><i class="fa fa-search"></i></button>
+      </form>
+    </div>    
+    <table class="table table-striped" id = "courseList">
+    <thead>
+        <tr>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Instructor</th>
+          <th>Capacity</th>
+          <th>Registered</th>
+          <th>Days</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Room Code</th>
+          <th>Prerequisite Name</th>
+          <th><a href="{{=URL('add_course')}}">Add Course</a></th>
+          <th><a href="{{=URL('delete_all')}}" style="color : red;">Delete All</a></th>
+        </tr>
+    </thead>
+    {{for course in courses:}}
+    <tbody>
+        <tr>
+            <td>{{=course['code']}}</td>
+            <td>{{=course['name']}}</td>
+            <td>{{=course['description']}}</td>
+            <td>{{=course['instructor']}}</td>
+            <td>{{=course['capacity']}}</td>
+            <td>{{=course['registered']}}</td>
+            <td>{{=course['days']}}</td>
+            <td>{{=course['start_time']}}</td>
+            <td>{{=course['end_time']}}</td>
+            <td>{{=course['room_code']}}</td>
+            <td>{{=course['prerequisite_name']}}</td>
+            <td><a href="{{=URL('update_by_code', vars={'code':course['code']})}}">Edit</a></td>
+            <td><a href="{{=URL('delete_by_code', vars={'code':course['code']})}}">Delete</a></td>
+          </tr>
+    {{pass}}
+    </tbody>
+    </table>
+  </div>
+  <script>
+    const searchInput = document.querySelector('#searchInput');
+    const courseList = document.querySelector('#courseList tbody');
+    const rows = courseList.querySelectorAll('tr');
+
+    searchInput.addEventListener('keyup', function(event) {
+        const term = event.target.value.toLowerCase();
+
+        rows.forEach(function(row) {
+            const text = row.innerText.toLowerCase();
+            const found = text.includes(term);
+            row.style.display = found ? '' : 'none';
+        });
+    });
+</script>

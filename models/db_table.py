@@ -27,10 +27,12 @@
 #         description VARCHAR,
 #         instructor VARCHAR,
 #         capacity INTEGER,
+#         registered INTEGER,
 #         days VARCHAR NOT NULL,
 #         startTime TIME NOT NULL DEFAULT '00:00:00',
 #         endTime TIME NOT NULL DEFAULT '00:00:00',
-#         room_code VARCHAR NOT NULL REFERENCES rooms(code)
+#         room_code VARCHAR NOT NULL REFERENCES rooms(code),
+#         prereq_code VARCHAR
 #     );
 # """)
 
@@ -39,14 +41,6 @@
 #             id SERIAL PRIMARY KEY,
 #             student_id INTEGER NOT NULL REFERENCES students(id),
 #             course_code VARCHAR NOT NULL REFERENCES courses(code)
-#         );
-# """)
-
-# db.executesql("""
-#     CREATE TABLE IF NOT EXISTS public.prerequists (
-#         id INTEGER PRIMARY KEY,
-#         course_code VARCHAR NOT NULL REFERENCES courses(code),
-#         prerequest_course_code VARCHAR NOT NULL REFERENCES courses(code)
 #         );
 # """)
 
@@ -71,10 +65,12 @@ db.define_table('courses',
     Field('description', 'string', length=255),
     Field('instructor', 'string', length=255),
     Field('capacity', 'integer'),
+    Field('registered', 'integer'),
     Field('days', 'string', length=255, notnull=True),
     Field('startTime', 'time', notnull=True, default='00:00:00'),
     Field('endTime', 'time', notnull=True, default='00:00:00'),
-    Field('room_code', 'string', length=255, notnull=True, requires=IS_IN_DB(db, 'rooms.code'))
+    Field('room_code', 'string', length=255, notnull=True, requires=IS_IN_DB(db, 'rooms.code')),
+    Field('prereq_code', 'string', length=20, requires=IS_IN_DB(db,'courses.code'))
 )
 
 db.define_table('students_reg',
@@ -83,8 +79,3 @@ db.define_table('students_reg',
     Field('course_code', 'reference courses', notnull=True)
 )
 
-db.define_table('prerequists',
-    Field('id', 'id', readable=False, primarykey = True),
-    Field('course_code', 'reference courses', notnull=True),
-    Field('prerequest_course_code', 'reference courses', notnull=True)
-)

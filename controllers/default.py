@@ -5,9 +5,11 @@
 # -------------------------------------------------------------------------
 
 # ---- example index page ----
+
+
 def index():
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    response.flash = 'Welcome to PPU Registration Platform!'
+    return response.render('home.html')
 
 # ---- API (example) -----
 @auth.requires_login()
@@ -23,11 +25,6 @@ def grid():
     if not tablename in db.tables: raise HTTP(403)
     grid = SQLFORM.smartgrid(db[tablename], args=[tablename], deletable=False, editable=False)
     return dict(grid=grid)
-
-# ---- Embedded wiki (example) ----
-def wiki():
-    auth.wikimenu() # add the wiki to the menu
-    return auth.wiki() 
 
 # ---- Action for login/register/etc (required for auth) -----
 def user():
@@ -51,8 +48,4 @@ def user():
 # ---- action to server uploaded static content (required) ---
 @cache.action()
 def download():
-    """
-    allows downloading of uploaded files
-    http://..../[app]/default/download/[filename]
-    """
     return response.download(request, db)

@@ -1,9 +1,8 @@
+{{extend 'layout.html'}}
 <!DOCTYPE html>
 <html>
 <head>
 	<title>University Registration System</title>
-    <link rel="shortcut icon" href="img/ppu-logo.jpeg" type="image/x-icon">
-	<!-- Add any necessary stylesheets and scripts here -->
 	<style>
 		/* Add any necessary styles here */
 		nav {
@@ -54,7 +53,7 @@
             font: 150% italic;
         }
         body {
-            background-image: url('img/ppu.jpeg');
+            background-image: url("{{=URL('static', 'images/ppu.jpeg')}}");
             background-size: cover;
             background-attachment: fixed;
         }
@@ -64,24 +63,11 @@
 
     <div class="container">
         <div class="ppu-logo">
-            <img src="img/ppu-logo1.png" alt="ppu-logo-image">
+            <img src="{{=URL('static', 'images/ppu-logo1.png')}}" alt="Image Description">
         </div>
         <div class="title">
             <h1>Electronic registration system</h1>
         </div>
     </div>
-	<!-- Navigation bar -->
-	<nav>
-		<ul>
-			<li><a href="#">Home</a></li>
-			<li><a href="#">Courses</a></li>
-			<li><a href="#">Registration</a></li>
-			<li><a href="#">Schedule</a></li>
-			<li><a href="#">Grades</a></li>
-			<li><a href="#">Financials</a></li>
-			<li><a href="#">Profile</a></li>
-			<li><a href="#">Logout</a></li>
-		</ul>
-	</nav>
 </body>
 </html>

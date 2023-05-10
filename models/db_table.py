@@ -29,8 +29,8 @@
 #         capacity INTEGER,
 #         registered INTEGER,
 #         days VARCHAR NOT NULL,
-#         startTime TIME NOT NULL DEFAULT '00:00:00',
-#         endTime TIME NOT NULL DEFAULT '00:00:00',
+#         start_time TIME NOT NULL DEFAULT '00:00:00',
+#         end_time TIME NOT NULL DEFAULT '00:00:00',
 #         room_code VARCHAR NOT NULL REFERENCES rooms(code),
 #         prereq_code VARCHAR
 #     );

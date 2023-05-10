@@ -74,6 +74,3 @@ def login():
 def logout():
     auth.logout()
     redirect(URL('default', 'index'))
-@cache.action()
-def download():
-    return response.download(request, db)

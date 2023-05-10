@@ -1,0 +1,79 @@
+{{extend 'layout.html'}}
+<style>
+  .search-container {
+    display: flex;
+    align-items:center;
+    justify-content:flex-start;
+  }
+  
+  .search-container input[type="text"] {
+    padding: 10px;
+    border: none;
+    font-size: 17px;
+    width: 50%;
+  }
+  
+  .search-container button {
+    padding: 10px;
+    background: #ddd;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .search-container button:hover {
+    background: #ccc;
+  }  
+</style>
+ <div class="container left"> 
+    <h1>All students</h1>
+    <div class="search-container">
+      <form action="#">
+        <input type="text" placeholder="Search..." name="search" id = searchInput>
+        <button type="submit"><i class="fa fa-search"></i></button>
+      </form>
+    </div>
+    <table class="table table-striped" id = "studentList">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <!-- <th>password</th> -->
+          <th>Registration Key</th>
+          <th>Reset Password Key</th>
+          <th><a href="{{=URL('create_student')}}">Add Student</a></th>
+          <th><a href="{{=URL('delete_all_students')}}" style="color : red;">Delete All</a></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{for student in students:}}
+        <tr>
+          <td>{{=student['first_name']}}</td>
+          <td>{{=student['last_name']}}</td>
+          <td>{{=student['email']}}</td>
+          <!-- <td>{{=student['password']}}</td> -->
+          <td>{{=student['registration_key']}}</td>
+          <td>{{=student['reset_password_key']}}</td>
+          <td><a href="{{=URL('update_student', vars={'id':student['id']})}}">Edit</a></td>
+          <td><a href="{{=URL('delete_student', vars={'id':student['id']})}}">Delete</a></td>
+        </tr> 
+      {{pass}}
+      </tbody>
+    </table>
+  </div>
+  <script>
+    const searchInput = document.querySelector('#searchInput');
+    const studentList = document.querySelector('#studentList tbody');
+    const rows = studentList.querySelectorAll('tr');
+
+    searchInput.addEventListener('keyup', function(event) {
+      const term = event.target.value.toLowerCase();
+
+      rows.forEach(function(row) {
+        const text = row.innerText.toLowerCase();
+        const found = text.includes(term);
+        row.style.display = found ? '' : 'none';
+      });
+    }); 
+  </script>

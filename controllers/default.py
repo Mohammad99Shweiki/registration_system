@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-# -------------------------------------------------------------------------
-# This is a sample controller
-# this file is released under public domain and you can use without limitations
-# -------------------------------------------------------------------------
 
-# ---- example index page ----
+import datetime
+
 def index():
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    response.flash = 'Welcome to PPU Registration Platform!'
+    return response.render('home.html')
 
 # ---- API (example) -----
 @auth.requires_login()
@@ -24,35 +21,56 @@ def grid():
     grid = SQLFORM.smartgrid(db[tablename], args=[tablename], deletable=False, editable=False)
     return dict(grid=grid)
 
-# ---- Embedded wiki (example) ----
-def wiki():
-    auth.wikimenu() # add the wiki to the menu
-    return auth.wiki() 
 
-# ---- Action for login/register/etc (required for auth) -----
-def user():
-    """
-    exposes:
-    http://..../[app]/default/user/login
-    http://..../[app]/default/user/logout
-    http://..../[app]/default/user/register
-    http://..../[app]/default/user/profile
-    http://..../[app]/default/user/retrieve_password
-    http://..../[app]/default/user/change_password
-    http://..../[app]/default/user/bulk_register
-    use @auth.requires_login()
-        @auth.requires_membership('group name')
-        @auth.requires_permission('read','table name',record_id)
-    to decorate functions that need access control
-    also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
-    """
-    return dict(form=auth())
+from gluon.tools import Auth
+auth = Auth(db)
 
-# ---- action to server uploaded static content (required) ---
-@cache.action()
-def download():
-    """
-    allows downloading of uploaded files
-    http://..../[app]/default/download/[filename]
-    """
-    return response.download(request, db)
+def row_count():
+    return db(db.auth_user.id > 0).count() + 1
+
+def get_current_year():
+    return datetime.date.today().year
+def register():
+    if request.method == 'POST':
+        first_name = request.vars.first_name
+        last_name = request.vars.last_name
+        email = request.vars.email
+        password = request.vars.password
+        encrypted_password = CRYPT()(password)[0] # encrypt the password using the CRYPT() function
+        registration_key = str(get_current_year()) + str(row_count())
+        reset_password_key = registration_key
+        registration_id = reset_password_key
+        
+        db.auth_user.insert(first_name=first_name, last_name=last_name, email=email, password=encrypted_password,
+                            registration_key=registration_key, 
+                            reset_password_key=reset_password_key,
+                            registration_id=registration_id,)
+        
+        response.flash = 'Registration successful'
+        redirect(URL('default', 'login'))
+    else:
+        response.flash = 'Please fill the form'
+        
+    return dict()
+
+
+
+def login():
+    if request.method == 'POST':
+        email = request.vars.email
+        password = request.vars.password
+        user = db(db.auth_user.email == email).select().first()
+        encrypted_password = CRYPT()(password)[0]
+        if user and encrypted_password == user.password:
+            auth.login_user(user)
+            redirect(URL('default', 'index'))
+        else:
+            response.flash = 'Invalid login'
+            redirect(URL('default', 'login'))
+
+    return dict()
+
+
+def logout():
+    auth.logout()
+    redirect(URL('default', 'index'))

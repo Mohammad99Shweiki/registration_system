@@ -191,7 +191,6 @@ def delete_by_code():
         session.flash = 'Course not found.'
         redirect(URL('show_all_courses'))
 
-
     delete_course_by_code(course_code)
 
     session.flash = 'Course deleted successfully.'

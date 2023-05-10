@@ -1,18 +1,18 @@
 
 def get_students():
-    students =  db(db.students).select()
+    students =  db(db.auth_user).select()
     return dict(students = students)
 
 def get_student_by_id(student_id):
-    student = db(db.students.id == student_id).select().first()
+    student = db(db.auth_user.id == student_id).select().first()
     return student
 
 def get_student_by_registration_key(registration_key):
-    student = db(db.students.registration_key == registration_key).select().first()
+    student = db(db.auth_user.registration_key == registration_key).select().first()
     return student
 
 def save_student(first_name, last_name, email, password, registration_key, reset_password_key, registraion_id):
-    new_student = db.students.insert(
+    new_student = db.auth_user.insert(
         first_name=first_name,
         last_name=last_name,
         email=email,
@@ -38,7 +38,7 @@ def edit_student(student, first_name, last_name, email, password, registration_k
         student.update_record(registration_key=registration_key)
 
 def delete_student_by_id(student_id):
-    db(db.students.id == student_id).delete()
+    db(db.auth_user.id == student_id).delete()
 
 def delete_all():
-    db(db.students).delete()
+    db(db.auth_user).delete()

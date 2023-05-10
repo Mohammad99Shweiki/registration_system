@@ -77,7 +77,7 @@ def update_student():
     if not student_id:
         return response.json({"error": "Missing student ID."}, status=400)
     
-    student = db.students(student_id)
+    student = db.auth_user(student_id)
     if not student:
         return response.json({"error": "Student not found."}, status=404)
     
@@ -97,7 +97,7 @@ def delete_student():
     if not student_id:
         return response.json({"error": "Missing student ID."}, status=400)
     
-    student = db.students(student_id)
+    student = db.auth_user(student_id)
     if not student:
         return response.json({"error": "Student not found."}, status=404)
     

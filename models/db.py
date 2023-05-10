@@ -93,8 +93,8 @@ auth = Auth(db, host_names=configuration.get('host.names'))
 # -------------------------------------------------------------------------
 # create all tables needed by auth, maybe add a list of extra fields
 # -------------------------------------------------------------------------
-auth.settings.extra_fields['auth_user'] = []
-auth.define_tables(username=False, signature=False)
+# auth.settings.extra_fields['auth_user'] = []
+# auth.define_tables(username=False, signature=False)
 
 # -------------------------------------------------------------------------
 # configure email
@@ -109,9 +109,6 @@ mail.settings.ssl = configuration.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 # configure auth policy
 # -------------------------------------------------------------------------
-auth.settings.registration_requires_verification = False
-auth.settings.registration_requires_approval = False
-auth.settings.reset_password_requires_verification = True
 
 # -------------------------------------------------------------------------  
 # read more at http://dev.w3.org/html5/markup/meta.name.html               

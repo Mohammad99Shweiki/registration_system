@@ -61,6 +61,7 @@
 'Community': 'المجتمع',
 'Components and Plugins': 'العناصر والإضافات',
 'Config.ini': 'Config.ini',
+'Confirm Password': 'Confirm Password',
 'Controller': 'متحكم',
 'Copyright': 'الحقوق',
 'Create Course': 'Create Course',

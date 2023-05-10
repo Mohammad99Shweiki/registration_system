@@ -48,7 +48,7 @@ db.define_table('rooms',
     Field('code', 'string', length=255, notnull=True, unique=True, primarykey=True)
 )
 
-db.define_table('students',
+db.define_table('auth_user',
     Field('id', 'integer', readable=False, primarykey = True),
     Field('first_name', 'string', length=255, notnull=True),
     Field('last_name', 'string', length=255, notnull=True),
@@ -56,7 +56,7 @@ db.define_table('students',
     Field('password', 'string', length=255, notnull=True),
     Field('registration_key', 'string', length=255, notnull=True),
     Field('reset_password_key', 'string', length=255, notnull=True),
-    Field('registraion_id', 'string', length=255, notnull=True)
+    Field('registration_id', 'string', length=255, notnull=True)
 )
 
 db.define_table('courses',
@@ -78,4 +78,18 @@ db.define_table('students_reg',
     Field('student_id', 'reference students', notnull=True),
     Field('course_code', 'reference courses', notnull=True)
 )
+
+db.define_table('auth_group',
+    Field('id', 'id', readable=False, primarykey = True),
+    Field('role', length=512, notnull=True, unique=True),
+    Field('description', 'text')
+)
+
+db.define_table('auth_membership',
+    Field('id', 'id', readable = False, primarykey = True),
+    Field('user_id', 'reference auth_user', requires=IS_IN_DB(db, 'auth_user.id',)),
+    Field('group_id', 'reference auth_group', requires=IS_IN_DB(db, 'auth_group.id'))
+)
+
+
 

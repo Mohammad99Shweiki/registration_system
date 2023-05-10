@@ -26,7 +26,7 @@ from gluon.tools import Auth
 auth = Auth(db)
 
 def row_count():
-    return db(db.auth_user.id > 0).count()
+    return db(db.auth_user.id > 0).count() + 1
 
 def get_current_year():
     return datetime.date.today().year

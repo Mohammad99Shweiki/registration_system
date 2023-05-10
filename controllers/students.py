@@ -1,4 +1,10 @@
-import json
+import datetime
+
+def row_count():
+    return db(db.auth_user.id > 0).count() + 1
+
+def get_current_year():
+    return datetime.date.today().year
 
 def show_student_by_id():
     id = request.vars.id
@@ -27,7 +33,7 @@ def show_student_by_id():
 
 def show_students():
     students = get_students()
-    return response.render('students/show_all_students.html', dict(students=students))
+    return response.render('students/show_all_students.html', students)
 
 def create_student():
     form = SQLFORM.factory(
@@ -100,11 +106,6 @@ def delete_student():
     redirect(URL('show_students'))
 
 def delete_all_students():
-    deleted = delete_all_courses()
-    if deleted:
-        session.flash = 'All Students deleted successfully.'
-    else:
-        session.flash = 'Something went wrong while trying to delete All students'
-    redirect(URL('show_students'))
     delete_all()
-    return response.json({"success": True})
+    session.flash = 'All Students deleted successfully.'
+    return redirect(URL('show_students'))

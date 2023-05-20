@@ -1,0 +1,58 @@
+{{extend 'layout.html'}}
+
+<div class="container">
+  <h2>Course Schedule for {{=student_name}}</h2>
+  <table class="table table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th>Time</th>
+        <th>Sun</th>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{for hour in range(8, 15):}}
+        <tr>
+          <td>{{=hour}}:00 - {{=hour+1}}:00</td>
+          {{for day in range(1, 6):}}
+            <td>
+              {{for course in courses:}}
+                {{if (course['days'] == '1' and day == 1) or (course['days'] == '2' and day == 2) or (course['days'] == '3' and day == 3) or (course['days'] == '1' and day == 3) or (course['days'] == '2' and day == 4) or (course['days'] == '3' and day == 5) or (course['days'] == '1' and day == 5):}}
+                  {{if course['start_time'].hour == hour and course['end_time'].hour == hour+1:}}
+                    <div class="course-info">
+                      <p class="mb-0 course-name">{{=course['name']}}</p>
+                      <small>{{=course['instructor']}}</small>
+                      <small class="text-muted">{{=course['room_code']}}</small>
+                      <form action="{{=URL('delete_from_schedule')}}">
+                        <input type="hidden" name="course_code" value="{{= course['code'] }}">
+                        <input type="submit" value="Remove" class = "btn btn-danger btn-sm">
+                      </form>
+                      <form action="{{=URL('course_description')}}" >
+                        <input type="hidden" name="code" value="{{= course['code'] }}">
+                        <input type="submit" value="Description" class="btn btn-info btn-sm">
+                      </form>
+                    </div>
+                  {{pass}}
+                {{pass}}
+              {{pass}}
+            </td>
+          {{pass}}
+        </tr>
+      {{pass}}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .course-info {
+    font-size: 14px;
+  }
+
+  .course-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+</style>

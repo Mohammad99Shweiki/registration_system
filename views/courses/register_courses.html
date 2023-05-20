@@ -1,0 +1,118 @@
+{{extend "layout.html"}}
+<style>
+  .search-container {
+    display: flex;
+    align-items:center;
+    justify-content:flex-start;
+  }
+  
+  .search-container input[type="text"] {
+    padding: 10px;
+    border: none;
+    font-size: 17px;
+    width: 50%;
+  }
+  
+  .search-container button {
+    padding: 10px;
+    background: #ddd;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .search-container button:hover {
+    background: #ccc;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th, td {
+    text-align: center;
+    padding: 12px;
+  }
+  
+  th {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  tr:hover {
+    background-color: #ddd;
+  }
+</style>
+<h1>Register Courses</h1>
+<div class="search-container">
+  <form action="#">
+    <input type="text" placeholder="Search..." name="search" id = searchInput>
+    <button type="submit"><i class="fa fa-search"></i></button>
+  </form>
+</div>    
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Name</th>
+      <th>Instructor</th>
+      <th>Capacity</th>
+      <th>Registered</th>
+      <th>Days</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Room</th>
+      <th>Prerequisite</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+    {{for course in courses:}}
+    <tbody>
+        <tr>
+            <td>{{=course['code']}}</td>
+            <td>{{=course['name']}}</td>
+            <td>{{=course['instructor']}}</td>
+            <td>{{=course['capacity']}}</td>
+            <td>{{=course['registered']}}</td>
+            {{if course['days'] == '1':}}
+            <td>Sunday Tuesday Thursday</td>
+            {{elif course['days' == '2']:}}
+            <td>Monday Wednesday</td>
+            {{else:}}
+            {{pass}}
+            <td>Sunday Thursday</td>
+            <td>{{=course['start_time']}}</td>
+            <td>{{=course['end_time']}}</td>
+            <td>{{=course['room_code']}}</td>
+            <td>{{=course['prerequisite_name']}}</td>
+            <td>
+              <form action="{{=URL('register_course')}}" method="post">
+                <input type="hidden" name="course_code" value="{{= course['code'] }}">
+                <input type="hidden" name="student_id" value="{{= student_id }}">
+                <input type="submit" value="Add to Schedule">
+              </form>
+            </td>
+        </tr>
+    {{pass}}
+  </tbody>
+</table>
+<script>
+  const searchInput = document.querySelector('#searchInput');
+  const courseList = document.querySelector('#courseList tbody');
+  const rows = courseList.querySelectorAll('tr');
+
+  searchInput.addEventListener('keyup', function(event) {
+      const term = event.target.value.toLowerCase();
+
+      rows.forEach(function(row) {
+          const text = row.innerText.toLowerCase();
+          const found = text.includes(term);
+          row.style.display = found ? '' : 'none';
+      });
+  });
+</script>

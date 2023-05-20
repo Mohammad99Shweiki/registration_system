@@ -59,9 +59,18 @@ def find_course_by_name():
         redirect(URL('show_all_courses'))
 
 
+def check_access():
+    user_id = auth.user.id
+    return user_id == 27
+
+
 def show_all_courses():
-    courses = get_all_courses()
-    return response.render('courses/show_all_courses.html', dict(courses=courses))
+    if check_access():
+        courses = get_all_courses()
+        return response.render('courses/show_all_courses.html', dict(courses=courses))
+    else:
+        session.flash = 'only accessible by admin'
+        return response.render('default/index.html')
 
 
 def add_course():
@@ -75,6 +84,7 @@ def add_course():
         Field('start_time', 'time', requires=IS_NOT_EMPTY()),
         Field('end_time', 'time', requires=IS_NOT_EMPTY()),
         Field('room_code', requires=IS_NOT_EMPTY()),
+        # Field('prerequisite_code'),
         submit_button='Add Course'
     )
     if form.process().accepted:
@@ -87,6 +97,8 @@ def add_course():
         start_time = form.vars.start_time
         end_time = form.vars.end_time
         room_code = form.vars.room_code
+        # prereq_code = form.vars.prerequisite_code
+        
         try:
             course_code = create_course(code, name, description, instructor, capacity, days, start_time, end_time, room_code)
         except psycopg2.Error as e:
@@ -96,6 +108,7 @@ def add_course():
         except CoursesTimesConflict as time_conflict:
             session.flash = 'there is an overlap between the course you are trying to add and another course in the system' + str(time_conflict)
             redirect(URL(add_course))
+        print(course_code)
         session.flash = 'Course added successfully!'
         redirect(URL(show_all_courses))
     return dict(form=form)
@@ -117,15 +130,19 @@ def update_by_code():
         Field('capacity', 'integer'),
         Field('registered', 'integer'),
         Field('days'),
-        Field('startTime', 'time'),
-        Field('endTime', 'time'),
+        Field('start_time', 'time'),
+        Field('end_time', 'time'),
         Field('room_code'),
+        Field('prerequisite_code'),
         submit_button='Update Course'
     )
 
     if form.process().accepted:
         data = {}
         for key, value in form.vars.items():
+            if key == 'prerequisite_code' and value is not None:
+                data['prereq_code'] = value
+                continue
             if value is not None:
                 data[key] = value
         try:        
@@ -159,11 +176,14 @@ def update_by_name():
         Field('startTime', 'time'),
         Field('endTime', 'time'),
         Field('room_code'),
+        Field('prerequisite_code'),
         submit_button='Update Course'
     )
     if form.process().accepted:
         data = {}
         for key, value in form.vars.items():
+            if key == 'prerequisite_code' and value is not None:
+                data['prereq_code'] = value
             if value is not None:
                 data[key] = value
         try:
@@ -223,3 +243,62 @@ def delete_all():
     else:
         session.flash = 'Something went wrong while trying to delete All courses'
     redirect(URL('show_all_courses'))
+
+def register_courses():
+    student_id = auth.user.id
+    courses = get_all_courses()
+    return response.render('courses/register_courses.html', dict(courses=courses, student_id = student_id))
+    
+def register_course():
+    course = str(request.vars.course_code)
+    student = auth.user.id
+    if check_if_registered(course,student):
+        session.flash = 'course already passed'
+    elif not check_avaliable(course, student):
+        session.flash = 'there is a course in your schedule at this course time'
+    elif not check_course_capacity(course):
+        session.flash = 'the course capacity is fulfilled cant receive more students currently'
+    elif not check_course_prerequisite(course, student):
+        session.flash = 'you must pass courses\' prerequisite to register it'
+    elif register_course_for_student(course, student):
+        session.flash = 'course registered successfully'
+    else:
+        session.flash = 'error occured while trying to register course'
+    redirect(URL('register_courses'))
+    
+    
+def student_schedule():
+    student_id = auth.user.id
+    courses = get_courses_by_student(student_id)
+    student = get_student_by_id(student_id)
+    student_name = student['first_name'] + ' ' + student['last_name']
+    response.title = 'Courses Schedule'
+    return response.render('courses/courses_schedule.html', dict(courses=courses, student_name = student_name))
+
+def delete_from_schedule():
+    student_id = auth.user.id
+    course_code = request.vars.course_code
+    try:
+        delete_course_from_student_schedule(course_code, student_id)
+    except Exception as e:
+        session.flash = 'error occured in database'
+        redirect(URL('student_schedule'))
+    session.flash = 'course deleted from your schedule successfully'
+    redirect(URL('student_schedule'))
+    
+def course_description():
+    code = request.vars.code
+    course = get_course_by_code(code)
+    try:
+        session.flash = str(course['description'])
+    except Exception as e:
+        session.flash = 'no description provided for the course at the moment'
+    redirect(URL('student_schedule'))
+
+
+def get_courses_by_student(student_id):
+    return db.executesql(f'''
+                        SELECT * FROM courses
+                            JOIN students_reg ON courses.code = students_reg.course_code
+                            WHERE students_reg.student_id = {student_id}
+    ''', as_dict = True)

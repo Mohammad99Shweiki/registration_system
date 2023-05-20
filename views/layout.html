@@ -1,4 +1,4 @@
-<!DOCTYPE <html class="no-js" lang="{{'en'}}"> <!--<![endif]-->
+<!DOCTYPE <html class="no-js" lang="{{'en'}}">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge{{=not request.is_local and ',chrome=1' or ''}}">
@@ -12,20 +12,29 @@
     <link rel="apple-touch-icon" href="{{=URL('static','images/favicon.png')}}">
     <script src="{{=URL('static','js/modernizr-2.8.3.min.js')}}"></script>
     {{include 'web2py_ajax.html'}}
+    {{ auth.settings.expiration = 10}}
     {{block head}}{{end}}
   </head>
   <body>
     <div class="w2p_flash alert alert-dismissable">{{=response.flash or ''}}</div>
     <nav>
       <ul>
+      {{if auth.user is None:}}
+        <li><a href="{{=URL('default','index')}}">Home</a></li>
+        <li><a href="{{=URL('default','login')}}">Login</a></li>
+        <li><a href="{{=URL('default','register')}}">Register</a></li>
+      {{elif auth.user.id == 27 :}}
         <li><a href="{{=URL('default','index')}}">Home</a></li>
         <li><a href="{{=URL('courses', 'show_all_courses')}}">Courses</a></li>
-        <li><a href="#">Registration</a></li>
-        <li><a href="#">Schedule</a></li>
-        <li><a href="#">Grades</a></li>
-        <li><a href="#">Financials</a></li>
-        <li><a href="#">Profile</a></li>
-        <li><a href="#">Logout</a></li>
+        <li><a href="{{=URL('default', 'admin_panel')}}">Admin Panel</a></li>
+        <li><a href="{{=URL('default','logout')}}">Logout</a></li>
+      {{else:}}
+      <li><a href="{{=URL('default','index')}}">Home</a></li>
+      <li><a href="{{=URL('courses', 'register_courses')}}">Registration</a></li>
+      <li><a href="{{=URL('courses', 'student_schedule')}}">Schedule</a></li>
+      <li><a href="{{=URL('default', 'student_dashboard')}}">Profile</a></li>
+      <li><a href="{{=URL('default','logout')}}">Logout</a></li>
+      {{pass}}      
       </ul>
     </nav>
     <!-- Masthead ===================================== -->

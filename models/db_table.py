@@ -8,19 +8,6 @@
 # """)
 
 # db.executesql("""
-#     CREATE TABLE public.students (
-#         id SERIAL PRIMARY KEY,
-#         first_name VARCHAR(255) NOT NULL,
-#         last_name VARCHAR(255) NOT NULL,
-#         email VARCHAR(255) NOT NULL,
-#         password VARCHAR(255) NOT NULL,
-#         registration_key VARCHAR(255) NOT NULL,
-#         reset_password_key VARCHAR(255) NOT NULL,
-#         registraion_id VARCHAR(255) NOT NULL
-#     );
-# """)
-
-# db.executesql("""
 #     CREATE TABLE public.courses (
 #         code VARCHAR PRIMARY KEY NOT NULL,
 #         name VARCHAR,
@@ -39,7 +26,7 @@
 # db.executesql("""
 #         CREATE TABLE IF NOT EXISTS public.students_reg (
 #             id SERIAL PRIMARY KEY,
-#             student_id INTEGER NOT NULL REFERENCES students(id),
+#             student_id INTEGER NOT NULL REFERENCES auth_user(id),
 #             course_code VARCHAR NOT NULL REFERENCES courses(code)
 #         );
 # """)
@@ -67,15 +54,15 @@ db.define_table('courses',
     Field('capacity', 'integer'),
     Field('registered', 'integer'),
     Field('days', 'string', length=255, notnull=True),
-    Field('startTime', 'time', notnull=True, default='00:00:00'),
-    Field('endTime', 'time', notnull=True, default='00:00:00'),
+    Field('start_time', 'time', notnull=True, default='00:00:00'),
+    Field('end_time', 'time', notnull=True, default='00:00:00'),
     Field('room_code', 'string', length=255, notnull=True, requires=IS_IN_DB(db, 'rooms.code')),
     Field('prereq_code', 'string', length=20, requires=IS_IN_DB(db,'courses.code'))
 )
 
 db.define_table('students_reg',
     Field('id', 'id', readable=False, primarykey = True),
-    Field('student_id', 'reference students', notnull=True),
+    Field('student_id', 'reference auth_user', notnull=True),
     Field('course_code', 'reference courses', notnull=True)
 )
 
@@ -91,5 +78,11 @@ db.define_table('auth_membership',
     Field('group_id', 'reference auth_group', requires=IS_IN_DB(db, 'auth_group.id'))
 )
 
-
-
+db.define_table('auth_event',
+    Field('id', 'integer'),
+    Field('time_stamp', 'datetime'),
+    Field('client_ip', 'string', length=512),
+    Field('user_id', 'integer'),
+    Field('origin', 'string', length=512),
+    Field('description', 'text')
+)

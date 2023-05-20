@@ -1,0 +1,57 @@
+{{extend 'layout.html'}}
+<!-- courses = db.executesql('SELECT name, registered FROM courses ORDER BY registered DESC', as_dict = True)
+    most_reg_course = db.executesql('SELECT * FROM courses WHERE registered = (SELECT MAX(registered) FROM courses)', as_dict = True)
+    total_students = -->
+<div class="container">
+  <h2>Admin Dashboard</h2>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Course with Most Registrations</h3>
+      {{if most_reg_course:}}
+        <p>{{=most_reg_course['name']}} ({{=most_reg_course['registered']}} registrations)</p>
+      {{else:}}
+        <p>No courses found.</p>
+      {{pass}}
+    </div>
+    <div class="col-md-6">
+      <h3>Total Number of Registered Students</h3>
+      <p>{{=total_students}}</p>
+    </div>
+  </div>
+  <hr>
+  <h3>Course List with Registrations</h3>
+  {{if courses:}}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Course Name</th>
+          <th>Registrations</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{for course in courses:}}
+          <tr>
+            <td>{{=course['name']}}</td>
+            <td>{{=course['registered']}}</td>
+          </tr>
+        {{pass}}
+      </tbody>
+    </table>
+  {{else:}}
+    <p>No courses found.</p>
+  {{pass}}
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Send Notification to Students</h3>
+      <form action="{{=URL('default','schedule_notification')}}">
+        <div class="form-group">
+          <label for="message">Message:</label>
+          <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Notification</button>
+      </form>
+    </div>
+  </div>
+</div>

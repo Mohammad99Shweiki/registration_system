@@ -1,0 +1,40 @@
+{{extend 'layout.html'}}
+<div class="container">
+  <h2>My Registered Courses</h2>
+  <hr>
+  {{if courses:}}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Course Name</th>
+          <th>Instructor</th>
+          <th>Room Code</th>
+          <td>Start Time</td>
+          <td>End Time</td>
+          <td>Days</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{for course in courses:}}
+          <tr>
+            <td>{{=course['name']}}</td>
+            <td>{{=course['instructor']}}</td>
+            <td>{{=course['room_code']}}</td>
+            <td>{{=course['start_time']}}</td>
+            <td>{{=course['end_time']}}</td>
+            {{if course['days'] == '1':}}
+            <td>Sunday Tuesday Thursday</td>
+            {{elif course['days' == '2']:}}
+            <td>Monday Wednesday</td>
+            {{else:}}
+            <td>Sunday Thursday</td>
+            {{endif}}
+          </tr>
+        {{pass}}
+      </tbody>
+      {{pass}}
+    </table>
+  {{else:}}
+    <p>No courses found.</p>
+  {{pass}}
+</div>

@@ -60,7 +60,13 @@
             <td>{{=course['instructor']}}</td>
             <td>{{=course['capacity']}}</td>
             <td>{{=course['registered']}}</td>
-            <td>{{=course['days']}}</td>
+            {{if course['days'] == '1':}}
+            <td>Sunday Tuesday Thursday</td>
+            {{elif course['days' == '2']:}}
+            <td>Monday Wednesday</td>
+            {{else:}}
+            <td>Sunday Thursday</td>
+            {{pass}}
             <td>{{=course['start_time']}}</td>
             <td>{{=course['end_time']}}</td>
             <td>{{=course['room_code']}}</td>
@@ -68,9 +74,9 @@
             <td><a href="{{=URL('update_by_code', vars={'code':course['code']})}}">Edit</a></td>
             <td><a href="{{=URL('delete_by_code', vars={'code':course['code']})}}">Delete</a></td>
           </tr>
-    {{pass}}
     </tbody>
     </table>
+    {{pass}}
   </div>
   <script>
     const searchInput = document.querySelector('#searchInput');
